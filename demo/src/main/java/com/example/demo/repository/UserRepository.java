@@ -12,6 +12,6 @@ public interface UserRepository extends JpaRepository<User, Integer>// id type
 																	// clmn>
 																	// {//table,
 {
-	@Query(value = "SELECT * FROM user_dtl where name=:name AND password=:password", nativeQuery = true)
-	User findByNameAndPassword(@Param("name") String name, @Param("password") String password);
+	@Query(value = "SELECT * FROM user_dtl where email=:email AND password=:password", nativeQuery = true)
+	User findByEmailAndPassword(@Param("email") String email, @Param("password") String password);
 }
