@@ -38,8 +38,12 @@ public class BookController {
 		newBook.setTitle(title);
 		newBook.setQuantity(quantity);
 		repository.save(newBook);
-		return ResponseEntity.ok("Added Successfully");
-		}
+		return ResponseEntity.ok("Added Successfully"); 
+	}
+	//	@GetMapping(value="/issue/dtl")
+	//	public ResponseEntity<String>issuebook (@RequestParam("student_id")String Student_id,
+	//	@RequestParam("book_id")String book_id,@RequestParam("date_of_issue")String date0fissue){
+		//}
 	
 	@GetMapping(value="/delete") 
 	public ResponseEntity<String> deleteentry (@RequestParam("id")Integer id){
