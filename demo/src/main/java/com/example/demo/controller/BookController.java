@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.entity.Book;
+import com.example.demo.entity.User;
 import com.example.demo.repository.BookRepository;
 
 @RestController
@@ -79,5 +81,17 @@ public class BookController {
 		return ResponseEntity.ok("id not available");
 
 	}
-
+	@GetMapping(value="/search")
+public ResponseEntity<List<Book>> searchYourBook(@RequestParam("string") String searchBook){
+	
+		if(searchBook == null || searchBook.equals("") )
+		{
+			ArrayList<Book> list = new ArrayList<Book>();  
+			return  ResponseEntity.ok(list);
+		}
+        List<Book> listBook= repository.searchYourBook(searchBook);
+		
+		 return ResponseEntity.ok(listBook);
+		
+}
 }
