@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import java.util.Optional;
@@ -95,7 +96,14 @@ public class UserController {
 	@GetMapping(value="/search")
 	public ResponseEntity<List<User>> searchUser(@RequestParam("string") String searchString){
 		
+		if(searchString == null || searchString.equals("") )
+		{
+			ArrayList<User> list = new ArrayList<User>();  
+			return  ResponseEntity.ok(list);
+		}
+		
 		List<User> listUser= repository.searchUser(searchString);
+		
 		return ResponseEntity.ok(listUser);
 		
 	}
