@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import java.util.List;
+
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.entity.User;
 import com.example.demo.repository.UserRepository;
+
+import com.example.demo.entity.LoginResponse;
 
 @RestController
 @RequestMapping(value = "/user")
@@ -31,6 +34,10 @@ public class UserController {
 	@GetMapping(value = "/add")
 	public ResponseEntity<String> adduser(@RequestParam("name") String name, @RequestParam("email") String email,
 			@RequestParam("password") String password, @RequestParam("role") String role) {
+		User u1=repository.findByEmail(email);
+		if(u1==null) {
+			
+		
 		User user1 = new User();
 		user1.setName(name);
 		user1.setEmail(email);
@@ -38,17 +45,24 @@ public class UserController {
 		user1.setRole(role);
 		repository.save(user1);
 		return ResponseEntity.ok("Added successfully");
+		}
+		return ResponseEntity.ok("User already exists");
 
 	}
 
 	@GetMapping(value = "/login")
-	public ResponseEntity<String> checkinguser(@RequestParam("email") String email,
+	public ResponseEntity<LoginResponse> checkinguser(@RequestParam("email") String email,
 			@RequestParam("password") String password) {
+		LoginResponse loginresponse=new LoginResponse();
+
 		User optuser = repository.findByEmailAndPassword(email, password);
 		if (optuser == null) {
-			return ResponseEntity.ok("user not available");
+			loginresponse.setStatus(false);
+			return ResponseEntity.ok(loginresponse);//false
 		}
-		return ResponseEntity.ok("logged in successfully");
+		loginresponse.setStatus(true);
+		loginresponse.setUser(optuser);//object frm db
+		return ResponseEntity.ok(loginresponse);
 	}
 
 	@GetMapping(value = "/delete")
