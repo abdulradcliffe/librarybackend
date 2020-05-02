@@ -27,9 +27,9 @@ public class UserController {
 
 	@GetMapping(value = "/getAll")
 	public ResponseEntity<List<User>> getAllUsers() {
-		List<User> allusers = repository.findAll();
+		List<User> allUsers = repository.findAll();
 
-		return ResponseEntity.ok(allusers);
+		return ResponseEntity.ok(allUsers);
 	}
 
 	@GetMapping(value = "/add")
@@ -54,20 +54,20 @@ public class UserController {
 	@GetMapping(value = "/login")
 	public ResponseEntity<LoginResponse> checkingUser(@RequestParam("email") String email,
 			@RequestParam("password") String password) {
-		LoginResponse loginresponse=new LoginResponse();
+		LoginResponse loginResponse=new LoginResponse();
 
 		User optUser = repository.findByEmailAndPassword(email, password);
 		if (optUser == null) {
-			loginresponse.setStatus(false);
-			return ResponseEntity.ok(loginresponse);//false
+			loginResponse.setStatus(false);
+			return ResponseEntity.ok(loginResponse);//false
 		}
-		loginresponse.setStatus(true);
-		loginresponse.setUser(optUser);//object frm db
-		return ResponseEntity.ok(loginresponse);
+		loginResponse.setStatus(true);
+		loginResponse.setUser(optUser);//object frm db
+		return ResponseEntity.ok(loginResponse);
 	}
 
 	@GetMapping(value = "/delete")
-	public ResponseEntity<String> deleteuser(@RequestParam("id") Integer id) {
+	public ResponseEntity<String> deleteUser(@RequestParam("id") Integer id) {
 		Optional<User> optuser = repository.findById(id);
 		if (optuser.isPresent()) {
 			repository.deleteById(id);
@@ -77,7 +77,7 @@ public class UserController {
 	}
 
 	@GetMapping(value = "/update")
-	public ResponseEntity<String> updateuser(@RequestParam("id") Integer id, @RequestParam("name") String name,
+	public ResponseEntity<String> updateUser(@RequestParam("id") Integer id, @RequestParam("name") String name,
 			@RequestParam("email") String email, @RequestParam("password") String password,
 			@RequestParam("role") String role) {
 		Optional<User> optuser = repository.findById(id);
