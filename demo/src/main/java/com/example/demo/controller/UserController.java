@@ -77,5 +77,13 @@ public class UserController {
 		}
 		return ResponseEntity.ok("id not found");
 	}
+	
+	@GetMapping(value="/search")
+	public ResponseEntity<List<User>> searchUser(@RequestParam("string") String searchString){
+		
+		List<User> listUser= repository.searchUser(searchString);
+		return ResponseEntity.ok(listUser);
+		
+	}
 
 }
