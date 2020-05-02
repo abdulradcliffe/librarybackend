@@ -48,7 +48,7 @@ public class BookController {
 		//}
 	
 	@GetMapping(value="/delete") 
-	public ResponseEntity<String> deleteentry (@RequestParam("id")Integer id){
+	public ResponseEntity<String> deleteEntry (@RequestParam("id")Integer id){
 		Optional<Book> optbook1=repository.findById(id);
 		if(optbook1.isPresent())
 		{
