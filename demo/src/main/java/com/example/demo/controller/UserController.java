@@ -33,7 +33,7 @@ public class UserController {
 	}
 
 	@GetMapping(value = "/add")
-	public ResponseEntity<String> adduser(@RequestParam("name") String name, @RequestParam("email") String email,
+	public ResponseEntity<String> addUser(@RequestParam("name") String name, @RequestParam("email") String email,
 			@RequestParam("password") String password, @RequestParam("role") String role) {
 		User u1=repository.findByEmail(email);
 		if(u1==null) {
@@ -52,17 +52,17 @@ public class UserController {
 	}
 
 	@GetMapping(value = "/login")
-	public ResponseEntity<LoginResponse> checkinguser(@RequestParam("email") String email,
+	public ResponseEntity<LoginResponse> checkingUser(@RequestParam("email") String email,
 			@RequestParam("password") String password) {
 		LoginResponse loginresponse=new LoginResponse();
 
-		User optuser = repository.findByEmailAndPassword(email, password);
-		if (optuser == null) {
+		User optUser = repository.findByEmailAndPassword(email, password);
+		if (optUser == null) {
 			loginresponse.setStatus(false);
 			return ResponseEntity.ok(loginresponse);//false
 		}
 		loginresponse.setStatus(true);
-		loginresponse.setUser(optuser);//object frm db
+		loginresponse.setUser(optUser);//object frm db
 		return ResponseEntity.ok(loginresponse);
 	}
 
