@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,8 +13,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.entity.Book;
+import com.example.demo.entity.IssuedBooks;
 import com.example.demo.entity.User;
 import com.example.demo.repository.BookRepository;
+import com.example.demo.repository.IssuedBooksRepository;
 
 @RestController
 @RequestMapping(value = "/book")//mappping url...
@@ -21,6 +24,9 @@ public class BookController {
 
 	@Autowired//injects bookrepository ka object inject krega bkcntlr
 	private BookRepository repository;
+	
+	@Autowired
+	private IssuedBooksRepository issueRepository;
 
 	@GetMapping(value = "/getAll")
 	public ResponseEntity<List<Book>> getAllBooks() {
@@ -94,4 +100,22 @@ public ResponseEntity<List<Book>> searchYourBook(@RequestParam("string") String 
 		 return ResponseEntity.ok(listBook);
 		
 }
+	@GetMapping(value="/issued")
+	public ResponseEntity<String> issuedBooks( @RequestParam("studentid") Integer studentId, 
+			@RequestParam("bookid") Integer bookId ){
+		IssuedBooks issuedBooks= new IssuedBooks();
+		issuedBooks.setStudentId(studentId);
+		issuedBooks.setBookId(bookId);
+		 Date date= new Date();
+	    issuedBooks.setDateOfIssue(date);
+	    issueRepository.save(issuedBooks);
+		return ResponseEntity.ok("Issued Succesfully");
+
+	    
+	    
+		
+		
+		
+	}
+	
 }
