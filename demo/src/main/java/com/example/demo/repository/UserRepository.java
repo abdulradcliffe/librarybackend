@@ -16,12 +16,13 @@ public interface UserRepository extends JpaRepository<User, Integer>// id type
 {
 	@Query(value = "SELECT * FROM user_dtl where email=:email AND password=:password", nativeQuery = true)
 	User findByEmailAndPassword(@Param("email") String email, @Param("password") String password);
-	
-	
-	
-	@Query(value="Select * from user_dtl where email=:email",nativeQuery=true)
-User findByEmail(@Param("email")String email);
-	
-	@Query(value="SELECT * FROM user_dtl where name like %:string%  OR email like %:string% OR role like %:string%", nativeQuery = true)
+
+	@Query(value = "Select * from user_dtl where email=:email", nativeQuery = true)
+	User findByEmail(@Param("email") String email);
+
+	@Query(value = "SELECT * FROM user_dtl where name like %:string%  OR email like %:string% OR role like %:string%", nativeQuery = true)
 	List<User> searchUser(@Param("string") String searchString);
+	
+	@Query(value ="SELECT * FROM user_dtl where id=:studentid" ,nativeQuery = true)
+	User getUserById( @Param("studentid") Integer studentId) ;
 }
