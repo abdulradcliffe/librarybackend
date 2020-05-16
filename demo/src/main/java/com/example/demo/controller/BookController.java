@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -34,9 +35,9 @@ public class BookController {
 
 	@GetMapping(value = "/getAll")
 	public ResponseEntity<List<Book>> getAllBooks() {
-		List<Book> allbooks = repository.findAll();
+		List<Book> allBooks = repository.findAll();
 
-		return ResponseEntity.ok(allbooks);
+		return ResponseEntity.ok(allBooks);
 	}
 
 	@GetMapping(value = "/add")
@@ -104,7 +105,8 @@ public class BookController {
 		return ResponseEntity.ok(listBook);
 
 	}
-    @Transactional
+
+	@Transactional
 	@GetMapping(value = "/issued")
 	public ResponseEntity<String> issuedBooks(@RequestParam("studentid") Integer studentId,
 			@RequestParam("bookid") Integer bookId) {
@@ -127,12 +129,21 @@ public class BookController {
 			return ResponseEntity.ok("book is out of stock");
 
 		}
+		IssuedBooks alreadyIssued = issueRepository.isAlreadyIssued(studentId, bookId);
 
-		Integer updatedQuantity = bookQuantity-1;
-		
+		if (alreadyIssued != null) {
+			return ResponseEntity.ok("This Book is already issued by student");
+		}
+		Integer bookCounts = issueRepository.countOfBookByStudent(studentId);
+
+		if (bookCounts >= 3) {
+			return ResponseEntity.ok("you can not issue more books");
+		}
+
+		Integer updatedQuantity = bookQuantity - 1;
+
 		repository.updateBookQuantity(updatedQuantity, bookId);
-		
-		
+
 		// finally issue the book to user
 		IssuedBooks issuedBooks = new IssuedBooks();
 		issuedBooks.setStudentId(studentId);
@@ -141,7 +152,45 @@ public class BookController {
 		issuedBooks.setDateOfIssue(date);
 		issueRepository.save(issuedBooks);
 
-		return ResponseEntity.ok("Issued Succesfully");
+		return ResponseEntity.ok("Issued Successfully");
+
+	}
+
+	@GetMapping(value = "/return")
+	@Transactional
+	public ResponseEntity<String> returnBook(@RequestParam("studentid") Integer studentId,
+			@RequestParam("bookid") Integer bookId ,@RequestParam("isfinepaid") boolean isFinePaid) {
+		IssuedBooks alreadyIssued = issueRepository.isAlreadyIssued(studentId, bookId);
+		if (alreadyIssued == null) {
+			return ResponseEntity.ok("Book is not issued");
+		}
+		if(isFinePaid == false)
+		{
+			Date issuedDate = alreadyIssued.getDateOfIssue();
+			Date currentDate = new Date(); 
+
+			long diffOfBothDates = currentDate.getTime() - issuedDate.getTime();
+			long diffInDays = TimeUnit.DAYS.convert(diffOfBothDates, TimeUnit.MILLISECONDS);
+			
+			if (diffInDays > 5)
+			{
+				 long fineAbleDays =  diffInDays - 5;
+				 long totalFine = fineAbleDays* 10;
+				 return  ResponseEntity.ok("you have to pay Rs " + totalFine + " Fine");
+				 
+			}
+			
+		}
+		
+
+		issueRepository.returnBook(studentId, bookId);
+		Book book = repository.getBookById(bookId);
+
+		Integer bookQuantity = book.getQuantity();
+		bookQuantity++;
+
+		repository.updateBookQuantity(bookQuantity, bookId);
+		return ResponseEntity.ok("Book returned Succesfully");
 
 	}
 

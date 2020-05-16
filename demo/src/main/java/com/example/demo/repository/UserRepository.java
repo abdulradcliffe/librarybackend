@@ -22,7 +22,10 @@ public interface UserRepository extends JpaRepository<User, Integer>// id type
 
 	@Query(value = "SELECT * FROM user_dtl where name like %:string%  OR email like %:string% OR role like %:string%", nativeQuery = true)
 	List<User> searchUser(@Param("string") String searchString);
-	
-	@Query(value ="SELECT * FROM user_dtl where id=:studentid" ,nativeQuery = true)
-	User getUserById( @Param("studentid") Integer studentId) ;
+
+	@Query(value = "SELECT * FROM user_dtl where id=:studentid", nativeQuery = true)
+	User getUserById(@Param("studentid") Integer studentId);
+
+	@Query(value = "SELECT * FROM user_dtl where id IN (:studentids)", nativeQuery = true)
+	List<User> findStudentdsByMultipleIds(@Param("studentids") List<Integer> StudentIds);
 }
